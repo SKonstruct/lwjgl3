@@ -1,6 +1,7 @@
 /nbproject/private/
 /bin
 /wiki
+/libffi
 .gradle
 .DS_Store
 *.bat
@@ -18,3 +19,4 @@
 *.wav
 *.zip
 touch.txt
+libffi-3.5.2.tar.gz
