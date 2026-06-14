@@ -212,6 +212,11 @@ public final class GL {
                     long address = GetProcAddress == NULL ? NULL : callPP(memAddress(functionName), GetProcAddress);
                     if (address == NULL) {
                         address = library.getFunctionAddress(functionName);
+                        if (address == NULL) {
+                            String name = org.lwjgl.system.MemoryUtil.memASCII(functionName).replace("\0", "");
+                            address = library.getFunctionAddress("gl4es_" + name);
+                            // System.out.println("[GL-Agent] lookup " + name + " -> gl4es_" + name + " address: " + address + " (library: " + library.address() + ")");
+                        }
                         if (address == NULL && DEBUG_FUNCTIONS) {
                             apiLogMissing("GL", functionName);
                         }

@@ -26,6 +26,10 @@ if [ "$SKIP_LIBFFI" != "1" ]; then
   # Restore generator
   mv generate-darwin-source-and-headers.py.bak generate-darwin-source-and-headers.py
 
+  # Touch armv7 headers so Xcode's Copy Headers phase doesn't fail
+  mkdir -p darwin_ios/include
+  touch darwin_ios/include/ffitarget_armv7.h darwin_ios/include/ffi_armv7.h
+
   # Build libffi
   xcodebuild -arch arm64 -sdk iphoneos -target libffi-iOS || echo "Exit code: $?"
 
