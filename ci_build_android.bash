@@ -19,7 +19,11 @@ elif [ "$LWJGL_BUILD_ARCH" == "x64" ]; then
 fi
 
 export TARGET=$NDK_TARGET-linux-android$NDK_SUFFIX
-export PATH=$PATH:$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin
+NDK_HOST_OS="linux-x86_64"
+if [ "$(uname)" == "Darwin" ]; then
+  NDK_HOST_OS="darwin-x86_64"
+fi
+export PATH=$PATH:$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/$NDK_HOST_OS/bin
 
 LWJGL_NATIVE=bin/libs/native/linux/$LWJGL_BUILD_ARCH/org/lwjgl
 mkdir -p $LWJGL_NATIVE
@@ -34,7 +38,7 @@ if [ "$SKIP_LIBFFI" != "1" ]; then
   cd libffi
 
   # Build libffi
-  bash configure --host=$TARGET --prefix=$PWD/$NDK_TARGET-unknown-linux-android$NDK_SUFFIX CC=${TARGET}21-clang CXX=${TARGET}21-clang++ --disable-multi-os-directory
+  bash configure --host=$TARGET --prefix=$PWD/$NDK_TARGET-unknown-linux-android$NDK_SUFFIX CC=${TARGET}21-clang CXX=${TARGET}21-clang++ AR=llvm-ar RANLIB=llvm-ranlib --disable-multi-os-directory
   make -j4
   cd ..
 
@@ -90,6 +94,7 @@ ant -version
 yes | ant init # Needed to download deps like kotlinc. We can't have this run offline, else jspecify fails to compile the kotlin properly and the missing annotations cause compile errors.
 export LWJGL_BUILD_OFFLINE=true
 yes | ant -Dplatform.linux=true \
+  -Dndk.bin="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/$NDK_HOST_OS/bin" \
   -Dbinding.assimp=false \
   -Dbinding.bgfx=false \
   -Dbinding.cuda=false \

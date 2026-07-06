@@ -18,6 +18,9 @@
 -->
 
     <property name="ndk.abi" value="21"/>
+    <condition property="jni.platform" value="darwin" else="linux">
+        <os family="mac"/>
+    </condition>
     <property name="ndk.home" value="${env.ANDROID_NDK_HOME}"/>
     <property name="ndk.bin" value="${ndk.home}/toolchains/llvm/prebuilt/linux-x86_64/bin"/>
 
@@ -57,7 +60,7 @@
                 <arg line="-D_FILE_OFFSET_BITS=64"/>
 
                 <arg value="-I${jni.headers}"/>
-                <arg value="-I${jni.headers}/linux"/>
+                <arg value="-I${jni.headers}/${jni.platform}"/>
 
                 <arg value="-I${module.lwjgl.rel}/core/src/main/c"/>
                 <arg value="-I${module.lwjgl.rel}/core/src/main/c/${platform}"/>
