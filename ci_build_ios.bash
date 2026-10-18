@@ -31,7 +31,9 @@ if [ "$SKIP_LIBFFI" != "1" ]; then
   touch darwin_ios/include/ffitarget_armv7.h darwin_ios/include/ffi_armv7.h
 
   # Build libffi
-  xcodebuild -arch arm64 -sdk iphoneos -target libffi-iOS || echo "Exit code: $?"
+  # libffi's project still targets iOS 8, below what current SDKs build for; failing here
+  # used to be swallowed, leaving whatever stale libffi.a was already on disk.
+  xcodebuild -arch arm64 -sdk iphoneos -target libffi-iOS IPHONEOS_DEPLOYMENT_TARGET=15.0
 
   # Copy libffi
   cd ..
