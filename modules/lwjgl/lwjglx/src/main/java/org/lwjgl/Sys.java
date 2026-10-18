@@ -16,7 +16,10 @@ public class Sys {
         try {
             // pojavexec is used to bridge GLFW with Android/iOS and loading vulkan driver for Android.
             if (Platform.get() == Platform.MACOSX) {
-                System.load(System.getenv("BUNDLE_PATH") + "/AngelAuraAmethyst");
+                // Amethyst ships its GLFW bridge as this file; other hosts (SKapsule) do not, and
+                // loading a missing path only logs a stack trace on every launch.
+                java.io.File bridge = new java.io.File(System.getenv("BUNDLE_PATH"), "AngelAuraAmethyst");
+                if (bridge.isFile()) System.load(bridge.getPath());
             } else if (Platform.get() == Platform.LINUX) {
                 System.loadLibrary("pojavexec");
             }
