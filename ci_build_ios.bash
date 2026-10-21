@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 export LIBFFI_VERSION=3.5.2
+# Downloads are pinned and checked: both end up linked into the app.
+LIBFFI_SHA256=f3a3082a23b37c293a4fcd1053147b371f2ff91fa7ea1b2a52e335676bac82dc
+SHADERC_VERSION=0.0.2
+SHADERC_SHA256=d806790ed3187734643bf8a8790ab5739ff76c10e13ea6304d7d4fe8e9a179c1
 export LWJGL_BUILD_ARCH=arm64
 
 LWJGL_NATIVE=bin/libs/native/macos/$LWJGL_BUILD_ARCH/org/lwjgl
@@ -10,6 +14,7 @@ if [ "$SKIP_LIBFFI" != "1" ]; then
   # Get libffi
   if [ ! -d libffi ]; then
     wget https://github.com/libffi/libffi/releases/download/v$LIBFFI_VERSION/libffi-$LIBFFI_VERSION.tar.gz
+    echo "$LIBFFI_SHA256  libffi-$LIBFFI_VERSION.tar.gz" | shasum -a 256 -c -
     tar xvf libffi-$LIBFFI_VERSION.tar.gz
     mv libffi-$LIBFFI_VERSION libffi
   fi
@@ -43,7 +48,8 @@ fi
 # Download libraries
 #POJAV_NATIVES="https://github.com/PojavLauncherTeam/PojavLauncher_iOS/raw/main/Natives/resources/Frameworks"
 #wget -nc $POJAV_NATIVES/libopenal.so -P $LWJGL_NATIVE/openal
-wget -nc "https://github.com/AngelAuraMC/shaderc/releases/latest/download/libshaderc-ios.zip"
+wget -nc "https://github.com/AngelAuraMC/shaderc/releases/download/$SHADERC_VERSION/libshaderc-ios.zip"
+echo "$SHADERC_SHA256  libshaderc-ios.zip" | shasum -a 256 -c -
 unzip -o libshaderc-ios.zip -d $LWJGL_NATIVE/shaderc
 rm $LWJGL_NATIVE/shaderc/libshaderc_shared.1.dylib
 mv $LWJGL_NATIVE/shaderc/libshaderc_shared.dylib $LWJGL_NATIVE/shaderc/libshaderc.dylib
