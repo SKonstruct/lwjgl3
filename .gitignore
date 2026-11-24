@@ -20,3 +20,4 @@
 *.zip
 touch.txt
 libffi-3.5.2.tar.gz
+.settings/org.eclipse.buildship.core.prefs
